@@ -20,7 +20,7 @@ jobs:
     
     - name: Compile for Windows
       run: |
-        g++ src/nt-tablas.cpp -o nt-tablas -static -lgdi32 -lwinspool
+        g++ nt-tablas.cpp -o nt-tablas -static -lgdi32 -lwinspool
     
     - name: Upload executable
       uses: actions/upload-artifact@v4
