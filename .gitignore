@@ -1,0 +1,2 @@
+# Just ignore executables created by g++
+*.exe
