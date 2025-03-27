@@ -33,14 +33,18 @@ using namespace std;
 typedef std::string String;
 namespace fs = std::filesystem;
 
+// Good for debugging
 void stoplog(string message);
 
+// Functions that return a string to change the background or foreground of the console text by using rgb
 string rgbBackgrounds(int r, int g, int b);
 string rgbs(int r, int g, int b);
 
+// Function to move the cursor to a console position
 void gotoxy(int x, int y);
 string gotoxys(int x, int y);
 
+// Some colors
 const std::string ASCII_BOLD = "\x1b[1m"; // Bold text
 const std::string ASCII_REVERSE = "\x1b[7m"; // Reverse (swap foreground and background colors)
 const std::string ASCII_GREEN = "\x1b[32m";
@@ -67,11 +71,15 @@ vector<int> getConsoleResolution() {
 int numRows = getConsoleResolution()[1] - 5;
 int numCols = min(getConsoleResolution()[0] / 15 - 2, 26);
 
+// Some variables for files
 String filename = "";
 String filecontent = "";
 
+// Function to check if a file exists
 inline bool exists_test0 (const std::string& name);
 
+// Classes of elements in documents
+// Cell class
 class Cell {
 public:
     String content;
@@ -88,6 +96,7 @@ public:
     int getY() { return y; }
 };
 
+// Table class
 class Table {
 public:
     std::vector<std::vector<Cell>> cells; // Matriz de celdas
@@ -174,6 +183,7 @@ public:
     }
 };
 
+// Tab class
 class Tab {
 public:
     Table table;
@@ -186,6 +196,7 @@ public:
     String getName() { return name; }
 };
 
+// Document class
 class Document {
 public:
     std::vector<Tab> tabs;
@@ -211,8 +222,10 @@ public:
     }
 };
 
+// A function to get the text that should be saved on the document
 string getAllText(Document& doc);
 
+// A function to create the initial tab
 void createInitialTab(Document& doc) {
     // Crear una tabla con 10 filas y 10 columnas
     Table table(numRows, numCols);
@@ -231,13 +244,17 @@ void createInitialTab(Document& doc) {
     doc.addTab(tab);
 }
 
+// Pre-definition of cool dialogs on the console
 string inputDialog(int winx, int winy, int winlen, int winhei, string wintitle, vector<string> wincontent, string winbackcolor, string winforecolor);
 void normaldialog(int winx, int winy, int winlen, int winhei, string wintitle, vector<string> wincontent, string winbackcolor, string winforecolor);
 void errordialog(int winx, int winy, int winlen, int winhei, string wintitle, vector<string> wincontent, string winbackcolor, string winforecolor);
 int selectiondialog(int winx, int winy, int winlen, int winhei, string wintitle, vector<string> wincontent, vector<string> options, string winbackcolor, string winforecolor);
 int bigselectiondialog(int winx, int winy, int winlen, int winhei, string wintitle, vector<string> wincontent, vector<string> options, string winbackcolor, string winforecolor);
 
+// A function to print documents in a printer
 void print(const vector<string>& lines) {
+    // No way this works
+
     PRINTER_INFO_2* pPrinterInfo = nullptr;
     DWORD dwNeeded, dwReturned;
 
@@ -279,7 +296,7 @@ void print(const vector<string>& lines) {
                     // Get printer metrics
                     int dpiX = GetDeviceCaps(printerHandle, LOGPIXELSX);
                     int dpiY = GetDeviceCaps(printerHandle, LOGPIXELSY);
-                    int margin = static_cast<int>(0.05 * dpiX); // 1cm margin
+                    int margin = static_cast<int>(0.05 * dpiX); // 0.5cm margin
                     int fontSize = static_cast<int>(12 * dpiY / 72.0); // 12pt font
 
                     DOCINFO docInfo = { sizeof(DOCINFO), filename.c_str(), NULL, NULL, 0 };
@@ -323,6 +340,7 @@ void print(const vector<string>& lines) {
     }
 }
 
+// Definition of cool in-console dialogs
 string inputDialog(int winx, int winy, int winlen, int winhei, string wintitle, vector<string> wincontent, string winbackcolor, string winforecolor) {
     string winbackground(winlen, ' ');
     
@@ -595,10 +613,14 @@ int bigselectiondialog(int winx, int winy, int winlen, int winhei, string wintit
 
     return selection;
 }
+
+// Variable which stores the opened tab
 int openedTab = 0;
 
+// A function to save the document
 void saveDocument(Document& doc) {
     if(doc.getName().empty() || doc.getName() == "Untitled") {
+        // Show the dialog to select a file for saving it
         int winx = getConsoleResolution()[0] / 2 - 70 / 2;
         int winy = getConsoleResolution()[1] / 2 - 6;
 
@@ -623,17 +645,19 @@ void saveDocument(Document& doc) {
         outfile.close();
     }
 
+    // Save the document
     ofstream outfile(doc.getName());
     if (outfile.good()) {
         outfile << getAllText(doc);
         outfile.close();
-        
     } else {
         std::cerr << "Error: No se pudo abrir el archivo para guardar." << std::endl;
     }
 }
 
+// A function to save the document as a new one
 void saveasDocument(Document& doc) {
+    // Just a dialog asking for the name of the document
     int winx = getConsoleResolution()[0] / 2 - 70 / 2;
     int winy = getConsoleResolution()[1] / 2 - 6;
 
@@ -661,6 +685,7 @@ void saveasDocument(Document& doc) {
     }
 }
 
+// A function that returns a document from a file
 Document openDocument(string filename2, Document openedDocument) {  
     if(exists_test0(filename2)) {
         ifstream infile(filename2);
@@ -708,10 +733,12 @@ Document openDocument(string filename2, Document openedDocument) {
     return openedDocument;
 }
 
+// Variables storing the podition of the mouse in the table
 int cursorX = 0, cursorY = 0;
 
 // Define grid data structure
 vector<vector<string>> grid(numRows, vector<string>(numCols, ""));
+
 // Ojito q va dpm
 int calculate(const std::string& expression) {
     std::stack<int> numbers;
@@ -843,6 +870,7 @@ void gotoxy(int x, int y) {
     coord.Y = y;
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
+// Function that resturns in a string how to move the cursor
 string gotoxys(int x, int y) {
     return "\033[" + to_string(y + 1) + ";" + to_string(x + 1) + "H";
 }
