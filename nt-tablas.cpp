@@ -1219,7 +1219,7 @@ void drawGrid(int cursorX, int cursorY, Document& openedDocument) {
             }
 
             // Reset the format
-            ss << "|" << ASCII_RESET;
+            ss << ASCII_RESET << "|";
         }
         ss << endl;
         cout << ss.str();
