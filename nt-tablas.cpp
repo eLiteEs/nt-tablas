@@ -1140,7 +1140,7 @@ void drawGrid(int cursorX, int cursorY, Document& openedDocument) {
     // Mostrar el contenido de la celda seleccionada
     String txt = " Text: " + ASCII_BOLD + openedDocument.getTabs()[openedTab].getTable().getCell(cursorY, cursorX).getContent();
     cout << rgbBackgrounds(240,240,240) << ASCII_BLACK << txt;
-    string bar(" ", getConsoleResolution()[0] - txt.length());
+    string bar(" ", getConsoleResolution()[0] - txt.length() + 4);
     cout << setw(getConsoleResolution()[0] - txt.length()) << left << " " << ASCII_RESET;
     string tablist;
     for(int i = 0; i < openedDocument.getTabs().size(); i++) {
@@ -1160,7 +1160,7 @@ void drawGrid(int cursorX, int cursorY, Document& openedDocument) {
 
     // Dibujar las letras de las columnas
     gotoxy(0, 3);
-    cout << "    |";
+    cout << "    " << (char) 179;
     cout << ASCII_UNDERLINE;
     stringstream ss;
     for (int i = 0; i < numCols; ++i) {
@@ -1173,7 +1173,7 @@ void drawGrid(int cursorX, int cursorY, Document& openedDocument) {
             } else {
                 ss << letter; // Adjust spacing as needed
             }
-            ss << ASCII_RESET << ASCII_UNDERLINE << "             |";
+            ss << ASCII_RESET << ASCII_UNDERLINE << "             " << (char) 179;
         } else {
             break; // Do not show more columns if they exceed Z
         }
@@ -1189,9 +1189,9 @@ void drawGrid(int cursorX, int cursorY, Document& openedDocument) {
         ss << ASCII_UNDERLINE;
 
         if(i == cursorY) {
-            ss << ASCII_BOLD << setw(3) << left << i + 1 << " |" << ASCII_RESET;
+            ss << ASCII_BOLD << setw(3) << left << i + 1 << " " << (char) 179 << ASCII_RESET;
         } else {
-            ss << setw(3) << left << i + 1 << " |";
+            ss << setw(3) << left << i + 1 << " " << (char) 179;
         }
 
         // Draw the cells
@@ -1219,7 +1219,7 @@ void drawGrid(int cursorX, int cursorY, Document& openedDocument) {
             }
 
             // Reset the format
-            ss << ASCII_RESET << "|";
+            ss << ASCII_RESET << ASCII_UNDERLINE << (char) 179;
         }
         ss << endl;
         cout << ss.str();
@@ -1969,6 +1969,7 @@ int main(int argc, char** argv) {
         }
     }
 
+    cout << ASCII_RESET;
     system("cls");
 
     return 0;
